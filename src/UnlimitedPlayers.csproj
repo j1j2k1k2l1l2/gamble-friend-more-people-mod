@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>UnlimitedPlayers</AssemblyName>
+    <RootNamespace>UnlimitedPlayers</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <DebugType>none</DebugType>
+
+    <!--
+      Path to the game root directory (the folder containing
+      "Gamble With Your Friends.exe" and "Gamble With Your Friends_Data").
+
+      Resolution order:
+        1. -p:GameDir="D:\path\to\Gamble With Your Friends\" (or env GWYF_GAME_DIR)
+        2. Default: repo cloned under <game root>\_ModDev\<this repo> (three levels up from src/)
+    -->
+    <GameDir Condition="'$(GameDir)' == '' and '$(GWYF_GAME_DIR)' != ''">$(GWYF_GAME_DIR)</GameDir>
+    <GameDir Condition="'$(GameDir)' == ''">$(MSBuildThisFileDirectory)..\..\..\</GameDir>
+
+    <!-- BepInEx core: prefer the mod's installed BepInEx folder, fall back to a manual bepinex_dist extraction -->
+    <BepInExCoreDir Condition="'$(BepInExCoreDir)' == '' and Exists('$(GameDir)BepInEx\core\BepInEx.dll')">$(GameDir)BepInEx\core\</BepInExCoreDir>
+    <BepInExCoreDir Condition="'$(BepInExCoreDir)' == '' and Exists('$(GameDir)_ModDev\bepinex_dist\BepInEx\core\BepInEx.dll')">$(GameDir)_ModDev\bepinex_dist\BepInEx\core\</BepInExCoreDir>
+    <ManagedDir>$(GameDir)Gamble With Your Friends_Data\Managed\</ManagedDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="BepInEx">
+      <HintPath>$(BepInExCoreDir)BepInEx.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(BepInExCoreDir)0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(ManagedDir)UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(ManagedDir)UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(ManagedDir)Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Mirror">
+      <HintPath>$(ManagedDir)Mirror.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="com.rlabrecque.steamworks.net">
+      <HintPath>$(ManagedDir)com.rlabrecque.steamworks.net.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>
